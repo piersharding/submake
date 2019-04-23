@@ -1,0 +1,8 @@
+
+check-code-standards-py2:
+  stage: check
+  image: docker:stable
+  script:
+    - 'make check_py2'
+  tags:
+    - docker
