@@ -1,8 +1,11 @@
 
-check-code-standards-py2:
+check-code-standards-flake8:
   stage: check
   image: docker:stable
   script:
-    - 'make check_py2'
+    - 'apk add --no-cache --virtual .build-deps g++ python3-dev libffi-dev openssl-dev'
+    - 'apk add --no-cache --update python3'
+    - 'pip3 install flake8'
+    - 'make check_flake8'
   tags:
     - docker

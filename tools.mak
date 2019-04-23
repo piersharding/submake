@@ -1,3 +1,3 @@
 
-check_py2: ## run pylint2
-	pylint test.py
+check_flake8: ## run flake8
+	flake8 test.py
