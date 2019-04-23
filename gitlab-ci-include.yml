@@ -21,37 +21,21 @@
     echo ""; echo ""
   }
 
-  function check_code_standards() {
-    echo ""; echo ""
-    echo "---------------------------------------------------------------------------"
-    echo "CHECK CODE STANDARDS"
-    echo "---------------------------------------------------------------------------"
-    apk add --no-cache --virtual .build-deps g++ python3-dev libffi-dev openssl-dev && \
-    apk add --no-cache --update python3 && \
-    pip3 install --upgrade pip setuptools
-    pip3 install pylint
-    ln -s /usr/bin/pylint /usr/bin/pylint3
-    make check
-    echo ""
-    echo "---------------------------------------------------------------------------"
-    echo ""; echo ""
+  # this can set in the runner as the --pre-build-script flag
+  function bootstrap_all() {
+    [[ "$DEBUG" ]] && runner_env
+    apk add --no-cache --update make
+    apk add --update openssl curl tar gzip bash ca-certificates git
+    git clone https://github.com/piersharding/submake.git --branch master --single-branch --depth 1 ./citools
   }
 
-# this can set in the runner as the --pre-build-script flag
-before_script:
-  - *bootstrap_and_functions
-  - '[[ "$DEBUG" ]] && runner_env'
-  - 'apk add --no-cache --update make'
-  - 'apk add --update openssl curl tar gzip bash ca-certificates git'
-  - 'git clone https://github.com/piersharding/submake.git --branch master --single-branch --depth 1 ./citools'
 
 check-code-standards-flake8:
   stage: check
   image: docker:stable
   before_script:
     - *bootstrap_and_functions
-    - '[[ "$DEBUG" ]] && runner_env'
-    - 'apk add --no-cache --update make'
+    - bootstrap_all
     - 'apk add --no-cache --virtual .build-deps g++ python3-dev libffi-dev openssl-dev'
     - 'apk add --no-cache --update python3'
     - 'pip3 install flake8'
